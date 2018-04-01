@@ -4,12 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.Iterator;
+import java.util.Scanner;
 
 public class RampantRandomizer extends JFrame {
     //Program Info
     private static String programName = "Rampant Randomizer";
     private static String version = " v.18.4";
-    private static String build = " Build 33118.1700";
+    private static String build = " Build 33118.1915";
 
     //Repeat Values
     private static String repeat = "Yes";
@@ -18,6 +23,7 @@ public class RampantRandomizer extends JFrame {
     private static int fileValue = 0;
 
     //Value Strings
+    private static String value = "";
     private static String value1 = "";
     private static String value2 = "";
     private static String value3 = "";
@@ -36,7 +42,7 @@ public class RampantRandomizer extends JFrame {
     private JButton randomize;
     private JButton multiRandomize;
     private JButton randomExport;
-    private JLabel result;
+    private JTextArea result;
     private JButton clearEntry;
 
     //GUI Setup
@@ -58,7 +64,7 @@ public class RampantRandomizer extends JFrame {
         randomize = new JButton("Randomize");
         multiRandomize = new JButton("Randomize 5");
         randomExport = new JButton("Randomize & Export");
-        result = new JLabel("");
+        result = new JTextArea("");
         clearEntry = new JButton("Clear");
 
         //Button Handler
@@ -102,18 +108,45 @@ public class RampantRandomizer extends JFrame {
     private class ButtonHandler implements ActionListener {
         public void actionPerformed(ActionEvent ae){
             try{
-                String file = fileNameEntry.getText();
+                String filename = fileNameEntry.getText();
+                filename = "./" + filename + ".txt";
                 if (ae.getSource() == randomize){
-
+                    File file = new File(filename);
+                    if (file.exists()){
+                        LinkedList<String> list = listClass(file);
+                        Iterator<String> it = list.iterator();
+                        value = it.next();
+                        result.setText(value);
+                    } else {
+                        result.setText("The file does not exist. Make sure the file is in the same folder as the program and try again.\nIf you are still having issues, make sure the file is a .txt file. If you still have issues, email me at\ntomjware92@gmail.com");
+                    }
                 }
                 else if (ae.getSource() == multiRandomize){
-
+                    File file = new File(filename);
+                    if (file.exists()) {
+                        LinkedList<String> list = listClass(file);
+                        Iterator<String> it = list.iterator();
+                        int i = 0;
+                        try {
+                            while (it.hasNext() && i < 5) {
+                                value1 = it.next();
+                                value2 = it.next();
+                                value3 = it.next();
+                                value4 = it.next();
+                                value5 = it.next();
+                            }
+                            result.setText("\n Your Values Are: \n - " + value1 + "\n - " + value2 + "\n - " + value3 + "\n - " + value4 + "\n - " + value5);
+                        } catch (Exception e) {
+                            result.setText("Not enough entries to complete successfully.");
+                        }
+                    }
                 }
                 else if (ae.getSource() == randomExport){
-
+                    result.setText("Unavailable At This Build");
                 }
                 else if (ae.getSource() == clearEntry){
-
+                    result.setText("");
+                    fileNameEntry.setText("");
                 }
             } catch (Exception e) {
 
@@ -125,5 +158,25 @@ public class RampantRandomizer extends JFrame {
     public static void main(String[] args){
         RampantRandomizer basicGui = new RampantRandomizer();
         basicGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    //LinkedList Creation
+    public LinkedList<String> listClass(File file){
+        LinkedList<String> list = new LinkedList<String>();
+        try {
+            Scanner sc = new Scanner(new FileInputStream(file));
+            while (sc.hasNextLine()){
+                String content = sc.nextLine();
+                list.add(content);
+            }
+            sc.close();
+        } catch (FileNotFoundException fnf) {
+            fnf.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setText("\n Program terminated safely...");
+        }
+        Collections.shuffle(list);
+        return list;
     }
 }
