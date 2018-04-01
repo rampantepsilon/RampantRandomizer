@@ -55,24 +55,21 @@ public class RampantRandomizer extends repeater {
                 while (repeatValue == 1 && fileValue == 1) {
                     String value = "";
                     int i = 0;
-                    try {
-                        while (it.hasNext() && i < 5) {
-                            value1 = it.next();
-                            i++;
-                            value2 = it.next();
-                            i++;
-                            value3 = it.next();
-                            i++;
-                            value4 = it.next();
-                            i++;
-                            value5 = it.next();
-                        }
-                    } catch (Exception e) {
-                        value = "End of File Reached";
+                    if (it.hasNext() && i < 5) {
+                        value1 = it.next();
+                        value2 = it.next();
+                        value3 = it.next();
+                        value4 = it.next();
+                        value5 = it.next();
+                        i = i+5;
+                        System.out.println("\nYour Value Is:");
+                        System.out.println(value1 + " | " + value2 + " | " + value3 + " | " + value4 + " | " + value5 + "\n");
+                    } else {
+                        value = "End of file found. Try another file.";
+                        System.out.println("\nYour Value Is:");
+                        System.out.println(value + "\n");
                     }
                     //String value = it.next();
-                    System.out.println("\nYour Value Is:");
-                    System.out.println(value1 + " | " + value2 + " | " + value3 + " | " + value4 + " | " + value5 + "\n");
                     System.out.println("Retry using the same file? (Enter Yes or No)");
                     filerepeat = reader.next();
                     fileValue = repeater(filerepeat);

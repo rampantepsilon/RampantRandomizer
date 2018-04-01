@@ -9,18 +9,13 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.Scanner;
+import org.apache.commons.lang3.text.WordUtils;
 
 public class RampantRandomizer extends JFrame {
     //Program Info
     private static String programName = "Rampant Randomizer";
-    private static String version = " v.18.4";
+    private static String version = " v.18.4.1";
     private static String build = " Build 33118.1915";
-
-    //Repeat Values
-    private static String repeat = "Yes";
-    private static int repeatValue = 1;
-    private static String filerepeat = "No";
-    private static int fileValue = 0;
 
     //Value Strings
     private static String value = "";
@@ -41,13 +36,13 @@ public class RampantRandomizer extends JFrame {
     private JTextField fileNameEntry;
     private JButton randomize;
     private JButton multiRandomize;
-    private JButton randomExport;
+    private JButton randomEntire;
     private JTextArea result;
     private JButton clearEntry;
 
     //GUI Setup
     public RampantRandomizer(){
-        super(programName + version + build);
+        super(programName + version);
 
         //Layout
         contents = getContentPane();
@@ -63,7 +58,7 @@ public class RampantRandomizer extends JFrame {
         fileNameEntry = new JTextField(50);
         randomize = new JButton("Randomize");
         multiRandomize = new JButton("Randomize 5");
-        randomExport = new JButton("Randomize & Export");
+        randomEntire = new JButton("Randomize All");
         result = new JTextArea("");
         clearEntry = new JButton("Clear");
 
@@ -72,7 +67,7 @@ public class RampantRandomizer extends JFrame {
 
         randomize.addActionListener(bh);
         multiRandomize.addActionListener(bh);
-        randomExport.addActionListener(bh);
+        randomEntire.addActionListener(bh);
         clearEntry.addActionListener(bh);
 
         //Dialog Components
@@ -86,7 +81,7 @@ public class RampantRandomizer extends JFrame {
         buttons.setLayout(new GridLayout(1,3,20,0));
         buttons.add(randomize);
         buttons.add(multiRandomize);
-        buttons.add(randomExport);
+        buttons.add(randomEntire);
         buttons.add(clearEntry);
 
         //Top Layout
@@ -139,10 +134,30 @@ public class RampantRandomizer extends JFrame {
                         } catch (Exception e) {
                             result.setText("Not enough entries to complete successfully.");
                         }
+                    } else {
+                        result.setText("The file does not exist. Make sure the file is in the same folder as the program and try again.\nIf you are still having issues, make sure the file is a .txt file. If you still have issues, email me at\ntomjware92@gmail.com");
                     }
                 }
-                else if (ae.getSource() == randomExport){
-                    result.setText("Unavailable At This Build");
+                else if (ae.getSource() == randomEntire){
+                    File file = new File(filename);
+                    if (file.exists()) {
+                        LinkedList<String> list = listClass(file);
+                        int size = list.size();
+                        Iterator<String> it = list.iterator();
+                        int i = 0;
+                        while (i < size){
+                            String entry = it.next();
+                            if (value.isEmpty()){
+                                value = entry;
+                            } else {
+                                value = value + " | " + entry;
+                            }
+                            i++;
+                        }
+                        result.setText("\n Your Randomized Values Are:\n" + value);
+                    } else {
+                        result.setText("The file does not exist. Make sure the file is in the same folder as the program and try again.\nIf you are still having issues, make sure the file is a .txt file. If you still have issues, email me at\ntomjware92@gmail.com");
+                    }
                 }
                 else if (ae.getSource() == clearEntry){
                     result.setText("");
